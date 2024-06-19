@@ -176,7 +176,69 @@
             margin: 4px;
             transition: 0.3s;
         }
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            unicode-bidi: bidi-override;
+            direction: rtl;
+        }
+        
+        .star-rating input {
+            display: none;
+        }
+        
+        .star-rating label {
+            color: #ccc;
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .star-rating label:before {
+            content: '\2605';
+            padding: 0 2px;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #f1c40f;
+        }
 
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        
+        
+        .field:not(:last-child) {
+            margin-bottom: 1rem;
+        }
+        
+        .control {
+            position: relative;
+        }
+        
+        .control input,
+        .control textarea {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 0.5rem;
+            width: 100%;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .control input:focus,
+        .control textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        .control textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
@@ -280,8 +342,28 @@
                     <h2 class="subtitle">Write a Review</h2>
                     <form method="post" action="{% url 'review_page' %}">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="button is-primary">Submit Review</button>
+                        <div class="field">
+                            <label class="label">{{ form.stars.label }}</label>
+                            <div class="star-rating">
+                                {% for value in "54321" %}
+                                    <input type="radio" id="rating-{{ value }}" name="{{ form.stars.name }}" value="{{ value }}" {% if value == form.stars.value|stringformat:"s" %}checked{% endif %}>
+                                    <label for="rating-{{ value }}"></label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label class="label">{{ form.review_text.label }}</label>
+                            <div class="control">
+                                {{ form.review_text }}
+                            </div>
+                        </div>
+            
+                        <div class="field">
+                            <div class="control">
+                                <button type="submit" class="button is-primary">Submit Review</button>
+                            </div>
+                        </div>
                     </form>
                     {% if submitted %}
                         <p class="success-message">Review submitted successfully!</p>
@@ -349,6 +431,27 @@
             }
     });
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const starLabels = document.querySelectorAll('.star-rating label');
+            const starsInput = document.querySelector(`input[name="{{ form.stars.name }}"]`);
+        
+           
+        
+            function updateStarLabels(value, hovered = false) {
+                starLabels.forEach((label, index) => {
+                    if (index < starLabels.length - value) {
+                        label.style.color = hovered ? '#ffcc00' : '#f1c40f';
+                    } else {
+                        label.style.color = '#ccc';
+                    }
+                });
+            }
+        });
+        
+        
+
     </script>
 </body>
 </html>
