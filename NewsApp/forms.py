@@ -28,6 +28,25 @@ class UserLoginForm(AuthenticationForm):
 
 
 class ReviewForm(forms.ModelForm):
+    stars = forms.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ],
+        widget=NumberInput(attrs={
+            'class': 'form-control',
+            'min': 1,
+            'max': 5
+        })
+    )
+
     class Meta:
         model = Review
         fields = ['stars', 'review_text']
+        widgets = {
+            'review_text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Enter your review here...'
+            }),
+        }
