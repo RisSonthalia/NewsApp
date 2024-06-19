@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.forms import TextInput, NumberInput
+from django.core.validators import MinValueValidator, MaxValueValidator
 from .models import Review
 
 class SignUpForm(UserCreationForm):
